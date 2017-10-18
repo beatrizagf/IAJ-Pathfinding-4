@@ -39,7 +39,7 @@ public class PathfindingManager : MonoBehaviour {
         this.navMesh = navMeshGraph;
 
         this.AStarPathFinding = pathfindingAlgorithm;
-        this.AStarPathFinding.NodesPerFrame = 15;
+        this.AStarPathFinding.NodesPerFrame = 200;
     }
 
 	// Use this for initialization
