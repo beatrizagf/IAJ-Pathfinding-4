@@ -81,7 +81,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         {
             //Tá feito
             nodeRecord.status = NodeStatus.Closed;
-            this.Open.RemoveFromOpen(nodeRecord);
+            //this.Open.RemoveFromOpen(nodeRecord);     //nos ja removemos com o getBestAndRemove, nao com este
         }
 
         public NodeRecord SearchInOpen(NodeRecord nodeRecord)
@@ -102,6 +102,8 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         public NodeRecord GetBestAndRemove()
         {
             //Tá feito
+            var best = PeekBest();
+            best.status = NodeStatus.Closed;    //como tiramos o no da lista open temos de alterar o status no caso de nao chegarmos a fazer addToClose que e quando encontramos a solucao
             return this.Open.GetBestAndRemove();
         }
 
@@ -120,14 +122,14 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         public void RemoveFromOpen(NodeRecord nodeRecord)
         {
             //Tá feito
-            //Cuidado! Não estamos a alterar o status
+            //Cuidado! Não estamos a alterar o status       //nao e usado?
             this.Open.RemoveFromOpen(nodeRecord);
         }
 
         public void RemoveFromClosed(NodeRecord nodeRecord)
         {
             //Tá feito
-            //Cuidado! Não estamos a alterar o status
+            nodeRecord.status = NodeStatus.Open;
         }
 
         ICollection<NodeRecord> IOpenSet.All()
@@ -139,7 +141,14 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         ICollection<NodeRecord> IClosedSet.All()
         {
             //Tá feito
-            return null;
+            //return null;  //temos de devolver os nos que tem status a closed
+            List<NodeRecord> closed = new List<NodeRecord>();
+            for (int i = 0; i < NodeRecords.Length; i++)
+            {
+                if (NodeRecords[i].status == NodeStatus.Closed)
+                    closed.Add(NodeRecords[i]);
+            }
+            return closed;
         }
 
         public int CountOpen()

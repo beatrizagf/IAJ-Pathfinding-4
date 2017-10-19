@@ -44,7 +44,9 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
 
             //TODO: implement the rest of your code here
 
+            //custo da sol ate agora (valor do no anterior mais a aresta do bestNode ate ao childnode)
             g = bestNode.gValue + connectionEdge.Cost;
+            //funcao heuristica: melhor custo estimado de n ate a solucao (como AStarPathFinding)
             h = this.Heuristic.H(childNode, this.GoalNode);
             f = F(g, h);
 
@@ -57,7 +59,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
                 childNodeRecord.parent = bestNode;
                 NodeRecordArray.AddToOpen(childNodeRecord);
             }
-            else if (childNodeRecord.status == NodeStatus.Open && f < childNodeRecord.fValue)
+            else if (childNodeRecord.status == NodeStatus.Open && (childNodeRecord.fValue > f || (f == childNodeRecord.fValue && childNodeRecord.hValue > h)))
             {
                 childNodeRecord.fValue = f;
                 childNodeRecord.gValue = g;
@@ -71,7 +73,8 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
                 childNodeRecord.gValue = g;
                 childNodeRecord.hValue = h;
                 childNodeRecord.parent = bestNode;
-                NodeRecordArray.Replace(childNodeRecord, childNodeRecord);
+                NodeRecordArray.RemoveFromClosed(childNodeRecord);
+                NodeRecordArray.AddToOpen(childNodeRecord);
             }
         }
             
