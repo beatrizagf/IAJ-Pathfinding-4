@@ -102,7 +102,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         public NodeRecord GetBestAndRemove()
         {
             //Tá feito
-            var best = PeekBest();
+            var best = this.PeekBest();
             best.status = NodeStatus.Closed;    //como tiramos o no da lista open temos de alterar o status no caso de nao chegarmos a fazer addToClose que e quando encontramos a solucao
             return this.Open.GetBestAndRemove();
         }

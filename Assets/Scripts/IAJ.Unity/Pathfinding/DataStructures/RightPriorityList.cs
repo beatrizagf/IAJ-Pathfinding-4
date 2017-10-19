@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 {
     public class RightPriorityList : IOpenSet, IComparer<NodeRecord>
-    {
+    {   //ordena ordem decrescente
         private List<NodeRecord> Open { get; set; }
 
         public RightPriorityList()
@@ -13,26 +13,29 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         }
         public void Initialize()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            this.Open.Clear();
         }
 
         public void Replace(NodeRecord nodeToBeReplaced, NodeRecord nodeToReplace)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            this.Open.Remove(nodeToBeReplaced);
+            this.AddToOpen(nodeToReplace);
         }
 
         public NodeRecord GetBestAndRemove()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            var best = this.PeekBest();
+            this.Open.Remove(best);
+            return best;
         }
 
         public NodeRecord PeekBest()
         {
             //TODO implement
-            throw new NotImplementedException();
+            return this.Open[Open.Count - 1];
         }
 
         public void AddToOpen(NodeRecord nodeRecord)
@@ -49,31 +52,43 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         public void RemoveFromOpen(NodeRecord nodeRecord)
         {
             //TODO implement
-            throw new NotImplementedException();
+            this.Open.Remove(nodeRecord);
         }
 
         public NodeRecord SearchInOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open.Find(n => n.Equals(nodeRecord));
         }
 
         public ICollection<NodeRecord> All()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open;
         }
 
         public int CountOpen()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open.Count;
         }
 
         public int Compare(NodeRecord x, NodeRecord y)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            //para ordem decrescente
+            if (x.fValue == y.fValue)
+            {
+                return 0;
+            }
+            else if (x.fValue < y.fValue)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
         }
     }
 }

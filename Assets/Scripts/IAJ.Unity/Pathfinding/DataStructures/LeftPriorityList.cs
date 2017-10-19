@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 {
     public class LeftPriorityList : IOpenSet
-    {
+    {   //ordena ordem crescente
         private List<NodeRecord> Open { get; set; }
 
         public LeftPriorityList()
@@ -13,26 +13,29 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         }
         public void Initialize()
         {
-            //TODO implement
+            //DONE implement
             this.Open.Clear();
         }
 
         public void Replace(NodeRecord nodeToBeReplaced, NodeRecord nodeToReplace)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            this.Open.Remove(nodeToBeReplaced);
+            this.AddToOpen(nodeToReplace);
         }
 
         public NodeRecord GetBestAndRemove()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            var best = this.PeekBest();
+            this.Open.Remove(best);
+            return best;
         }
 
         public NodeRecord PeekBest()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open[0];
         }
 
         public void AddToOpen(NodeRecord nodeRecord)
@@ -51,26 +54,26 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 
         public void RemoveFromOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            this.Open.Remove(nodeRecord);
         }
 
         public NodeRecord SearchInOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open.Find(n => n.Equals(nodeRecord));
         }
 
         public ICollection<NodeRecord> All()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open;
         }
 
         public int CountOpen()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            //DONE implement
+            return this.Open.Count;
         }
     }
 }
