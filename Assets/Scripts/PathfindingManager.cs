@@ -47,8 +47,13 @@ public class PathfindingManager : MonoBehaviour {
 	{
         this.currentClickNumber = 1;
 
-        //comentar o metodo que nao queremos usar e descomentar o que queremos usar 
-		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+        //comentar o metodo que nao queremos usar e descomentar o que queremos usar (organizado do pior ao melhor):
+
+        //AStar com Unordered List
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+        //AStar com PriorityHeap
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+        //NodeAStar
         this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
     }
 
