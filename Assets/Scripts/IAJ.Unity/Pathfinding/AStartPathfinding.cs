@@ -144,6 +144,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
                     {
                         this.ProcessChildNode(bestNode, bestNode.node.EdgeOut(i));
                     }
+                    //tamanho maximo da estrutura de dados
                     this.MaxOpenNodes = Mathf.Max(this.Open.CountOpen(), this.MaxOpenNodes);
                 }
                 else

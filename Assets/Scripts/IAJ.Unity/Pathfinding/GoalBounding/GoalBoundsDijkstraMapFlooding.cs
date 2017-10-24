@@ -21,7 +21,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
 
         public IOpenSet Open { get; protected set; }
         public IClosedSet Closed { get; protected set; }
-        
+
         public GoalBoundsDijkstraMapFlooding(NavMeshPathGraph graph)
         {
             this.NavMeshGraph = graph;
@@ -32,16 +32,80 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
             this.Closed = this.NodeRecordArray;
         }
 
+        //cria rectangulos
         public void Search(NavigationGraphNode startNode, NodeGoalBounds nodeGoalBounds)
         {
-			//TODO: Implement the algorithm that calculates the goal bounds using a dijkstra
-			//Given that the nodes in the graph correspond to the edges of a polygon, we won't be able to use the vertices of the polygon to update the bounding boxes
+            //TODO: Implement the algorithm that calculates the goal bounds using a dijkstra
+            //Given that the nodes in the graph correspond to the edges of a polygon, we won't be able to use the vertices of the polygon to update the bounding boxes
+
+
+            // mete os vizinhos do no inicial. Inicializacao da lista
+
+            var outConnections = startNode.OutEdgeCount;
+            for (int i = 0; i < outConnections; i++) {
+                NavigationGraphEdge edge =startNode.EdgeTo(startNode,i);
+                //TODO inicislaizasr go
+
+                var childNode = edge.ToNode;
+                var childNodeRecord = this.NodeRecordArray.GetNodeRecord(childNode);
+
+                NodeRecordArray.AddToOpen(childNodeRecord);
+
+            }
+
+            //giro:  var startTime = Time.realtimeSinceStartup;
+
+            //enquanto houver nos no conj open
+            while (this.Open.CountOpen() > 0){
+                NodeRecord bestNode = this.Open.GetBestAndRemove();
+
+                this.Closed.AddToClosed(bestNode);
+
+                //para ver as ligacoes do no que acabamos de ver
+                var outConnections2 = bestNode.node.OutEdgeCount;
+                for (int j = 0; j < outConnections2; j++)
+                {
+                   // this.ProcessChildNode(bestNode, bestNode.node.EdgeOut(i), cor do rectangulo);
+                }
+                // giro: this.MaxOpenNodes = Mathf.Max(this.Open.CountOpen(), this.MaxOpenNodes);
+                //aumentar o rectangulo
+                //nodeGoalBounds.connectionBounds[bestNode.StartNodeOutConnectionIndex]; //isto e a cor do rectangulo. falta updateBounds
+            }
         }
 
-       
+
         protected void ProcessChildNode(NodeRecord parent, NavigationGraphEdge connectionEdge, int connectionIndex)
         {
-			//TODO: Implement this method that processes a child node. Then you can use it in the Search method above.
+            //TODO: Implement this method that processes a child node. Then you can use it in the Search method above.
+
+            float g;
+
+            var childNode = connectionEdge.ToNode;
+            var childNodeRecord = this.NodeRecordArray.GetNodeRecord(childNode);
+
+            //custo da sol ate agora (valor do no anterior mais a aresta do bestNode ate ao childnode)
+            g = parent.gValue + connectionEdge.Cost;
+
+            if (childNodeRecord.status == NodeStatus.Unvisited)
+            {
+                childNodeRecord.gValue = g;
+                childNodeRecord.parent = parent;
+                NodeRecordArray.AddToOpen(childNodeRecord);
+                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;   //das cor
+
+
+            }
+            else if (childNodeRecord.status == NodeStatus.Open && (childNodeRecord.gValue > g ))
+            {
+  
+                childNodeRecord.gValue = g;
+                childNodeRecord.parent = parent;
+                NodeRecordArray.Replace(childNodeRecord, childNodeRecord);
+                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;    //trocas cor
+
+
+            }
+
         }
 
         private List<NavigationGraphNode> GetNodesHack(NavMeshPathGraph graph)
@@ -57,3 +121,4 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
 
     }
 }
+
