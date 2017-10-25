@@ -1,6 +1,9 @@
 ﻿using Assets.Scripts.IAJ.Unity.Pathfinding;
 using Assets.Scripts.IAJ.Unity.Pathfinding.Heuristics;
 using Assets.Scripts.IAJ.Unity.Pathfinding.Path;
+using Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding;
+using Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures.GoalBounding;
+
 using UnityEngine;
 using RAIN.Navigation;
 using RAIN.Navigation.NavMesh;
@@ -26,7 +29,8 @@ public class PathfindingManager : MonoBehaviour {
 	private Vector3 endPosition;
 	private NavMeshPathGraph navMesh;
     private int currentClickNumber;
-    
+    private GoalBoundingTable goalBoundsTable;
+
     private GlobalPath currentSolution;
     private bool draw;
 
@@ -40,6 +44,8 @@ public class PathfindingManager : MonoBehaviour {
 
         this.AStarPathFinding = pathfindingAlgorithm;
         this.AStarPathFinding.NodesPerFrame = 200;
+
+        this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
     }
 
 	// Use this for initialization
@@ -54,7 +60,10 @@ public class PathfindingManager : MonoBehaviour {
         //AStar com PriorityHeap
         //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
         //NodeAStar
-        this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
+        //GoalBounding
+        this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
+
     }
 
     // Update is called once per frame

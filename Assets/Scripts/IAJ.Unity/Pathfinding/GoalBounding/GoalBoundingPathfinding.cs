@@ -59,8 +59,17 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
             h = this.Heuristic.H(childNode, this.GoalNode);
             f = F(g, h);
 
+            //indice da cor do rectangulo
+            var color = childNodeRecord.StartNodeOutConnectionIndex;
 
-            if (childNodeRecord.status == NodeStatus.Unvisited )//&& se esta no rectangulo com o objectivo)
+            //indice startNode
+            var startNode = childNodeRecord.node.NodeIndex;
+
+            //entrada da tabela dos rectangulos
+            var bbox = GoalBoundingTable.table[color].connectionBounds[startNode];
+
+
+            if (childNodeRecord.status == NodeStatus.Unvisited && bbox.PositionInsideBounds(childNodeRecord.node.Position))
             {
                 childNodeRecord.fValue = f;
                 childNodeRecord.gValue = g;

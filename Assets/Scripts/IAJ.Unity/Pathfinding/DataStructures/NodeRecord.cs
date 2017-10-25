@@ -20,6 +20,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
         public NodeStatus status;
 
         //used only for the GoalBounds
+        //indice das cores dos rectangulos
         public int StartNodeOutConnectionIndex;
 
         public int CompareTo(NodeRecord other)

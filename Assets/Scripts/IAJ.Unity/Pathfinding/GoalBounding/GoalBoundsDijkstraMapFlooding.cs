@@ -11,7 +11,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
     //2) it will not stop until the open list is empty
     //3) we dont need to execute the algorithm in multiple steps (because it will be executed offline)
     //4) we don't need to return any path (partial or complete)
-    //5) we don't need to do anything when a node is already in closed
+    //5) we don't need to do anything when a node is already in closed, porque a heuristica e inadmissivel e inconsistente
     public class GoalBoundsDijkstraMapFlooding
     {
         public NavMeshPathGraph NavMeshGraph { get; protected set; }
@@ -30,6 +30,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
             this.NodeRecordArray = new NodeRecordArray(nodes);
             this.Open = this.NodeRecordArray;
             this.Closed = this.NodeRecordArray;
+
         }
 
         //cria rectangulos
@@ -40,17 +41,19 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
 
 
             // mete os vizinhos do no inicial. Inicializacao da lista
-
             var outConnections = startNode.OutEdgeCount;
             for (int i = 0; i < outConnections; i++) {
-                NavigationGraphEdge edge =startNode.EdgeTo(startNode,i);
-                //TODO inicislaizasr go
+                
+                NavigationGraphEdge edge = startNode.EdgeOut(i);
 
                 var childNode = edge.ToNode;
                 var childNodeRecord = this.NodeRecordArray.GetNodeRecord(childNode);
-
+                //adicionar ao open
                 NodeRecordArray.AddToOpen(childNodeRecord);
 
+                //transformar em vector3 para inicializar cada rectangulo
+                childNodeRecord.StartNodeOutConnectionIndex = i;
+          
             }
 
             //giro:  var startTime = Time.realtimeSinceStartup;
@@ -59,25 +62,25 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
             while (this.Open.CountOpen() > 0){
                 NodeRecord bestNode = this.Open.GetBestAndRemove();
 
+                //aumentar o rectangulo
+                nodeGoalBounds.connectionBounds[bestNode.StartNodeOutConnectionIndex].UpdateBounds(bestNode.node.Position); //isto e a cor do rectangulo. falta updateBounds
+
                 this.Closed.AddToClosed(bestNode);
 
                 //para ver as ligacoes do no que acabamos de ver
                 var outConnections2 = bestNode.node.OutEdgeCount;
                 for (int j = 0; j < outConnections2; j++)
                 {
-                   // this.ProcessChildNode(bestNode, bestNode.node.EdgeOut(i), cor do rectangulo);
+                   this.ProcessChildNode(bestNode, bestNode.node.EdgeOut(j), bestNode.StartNodeOutConnectionIndex);
                 }
                 // giro: this.MaxOpenNodes = Mathf.Max(this.Open.CountOpen(), this.MaxOpenNodes);
-                //aumentar o rectangulo
-                //nodeGoalBounds.connectionBounds[bestNode.StartNodeOutConnectionIndex]; //isto e a cor do rectangulo. falta updateBounds
+               
             }
         }
 
 
         protected void ProcessChildNode(NodeRecord parent, NavigationGraphEdge connectionEdge, int connectionIndex)
         {
-            //TODO: Implement this method that processes a child node. Then you can use it in the Search method above.
-
             float g;
 
             var childNode = connectionEdge.ToNode;
