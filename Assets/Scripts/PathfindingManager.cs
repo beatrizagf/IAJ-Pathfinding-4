@@ -34,6 +34,9 @@ public class PathfindingManager : MonoBehaviour {
     private GlobalPath currentSolution;
     private bool draw;
 
+    private bool finished;
+    private GlobalPath smoothedPath;
+
     //public properties
     public AStarPathfinding AStarPathFinding { get; private set; }
 
@@ -46,6 +49,7 @@ public class PathfindingManager : MonoBehaviour {
         this.AStarPathFinding.NodesPerFrame = 200;
 
         this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
+        this.smoothedPath = new GlobalPath();
     }
 
 	// Use this for initialization
@@ -127,9 +131,74 @@ public class PathfindingManager : MonoBehaviour {
         //call the pathfinding method if the user specified a new goal
         if (this.AStarPathFinding.InProgress)
 	    {
-	        var finished = this.AStarPathFinding.Search(out this.currentSolution);
+	        this.finished = this.AStarPathFinding.Search(out this.currentSolution);
 	    }
-	}
+
+        if (finished)
+        {
+            //TODO: Call Path-smooting
+        }
+
+
+    }
+
+    public void SmoothPath() {
+        int i = 0;
+        var positions = currentSolution.PathPositions;
+        smoothedPath.PathPositions.Add(positions[0]);
+
+        while (i < positions.Count) {
+            int j = i + 1;
+
+            while (j < positions.Count) {
+                if (j+1 < positions.Count) {
+                    var pos_start = positions[i];
+                    var pos_next = positions[j + 1];
+
+                    /*RaycastHit hit = new RaycastHit();
+                    Ray rayVector = new Ray(pos_start, pos_next);
+                    var collision = Obstacle.Raycast(rayVector, out hit, this.MaxLookAhead);*/
+                    var collision = true;
+
+                    if (collision) {
+                        smoothedPath.PathPositions.Add(positions[j]);
+                        i = j;
+                        break;
+                    }
+                    else
+                        j++;
+                }
+                else {
+                    smoothedPath.PathPositions.Add(positions[j]);
+                    i = j;
+                    break;
+                }
+            }
+        }
+
+        /*while (i < nodes.len)
+	        j = i+1
+
+	        while (j < nodes.len)
+
+		        if (j+1 < nodes.len)
+			        pos_start = nodes[i].position
+			        pos_aux = nodes[j+1].position
+			        ray = ray(pos_start, pos_aux)
+
+			        if (ray.hit)
+				        smooth.add(nodes[j])
+				        i = j
+				        break
+			        else
+				        j++
+		        else
+			        smooth.add(nodes[j])
+			        i = j
+			        break
+        */
+    }
+
 
     public void OnGUI()
     {
