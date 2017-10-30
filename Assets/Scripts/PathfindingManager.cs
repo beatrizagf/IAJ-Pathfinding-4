@@ -48,9 +48,8 @@ public class PathfindingManager : MonoBehaviour {
 		this.AStarPathFinding = pathfindingAlgorithm;
 		this.AStarPathFinding.NodesPerFrame = 200;
 
-		this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
-		this.smoothedPath = new GlobalPath();
-	}
+        this.smoothedPath = new GlobalPath();
+    }
 
 	// Use this for initialization
 	void Awake ()
@@ -59,14 +58,15 @@ public class PathfindingManager : MonoBehaviour {
 
 		//comentar o metodo que nao queremos usar e descomentar o que queremos usar (organizado do pior ao melhor):
 
-		//AStar com Unordered List
-		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
-		//AStar com PriorityHeap
-		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
-		//NodeAStar
-		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
-		//GoalBounding
-		this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
+        //AStar com Unordered List
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+        //AStar com PriorityHeap
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+        //NodeAStar
+        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
+        //GoalBounding
+        this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
+        this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
 
 	}
 
