@@ -15,64 +15,64 @@ public class PathfindingManager : MonoBehaviour {
 
 	//public fields to be set in Unity Editor
 	public GameObject endDebugSphere;
-    public GameObject startDebugSphere;
+	public GameObject startDebugSphere;
 	public Camera camera;
-    public GameObject p1;
-    public GameObject p2;
-    public GameObject p3;
-    public GameObject p4;
-    public GameObject p5;
-    public GameObject p6;
+	public GameObject p1;
+	public GameObject p2;
+	public GameObject p3;
+	public GameObject p4;
+	public GameObject p5;
+	public GameObject p6;
 
 	//private fields for internal use only
 	private Vector3 startPosition;
 	private Vector3 endPosition;
 	private NavMeshPathGraph navMesh;
-    private int currentClickNumber;
-    private GoalBoundingTable goalBoundsTable;
+	private int currentClickNumber;
+	private GoalBoundingTable goalBoundsTable;
 
-    private GlobalPath currentSolution;
-    private bool draw;
+	private GlobalPath currentSolution;
+	private bool draw;
 
-    private bool finished;
-    private GlobalPath smoothedPath;
+	private bool finished;
+	private GlobalPath smoothedPath;
 
-    //public properties
-    public AStarPathfinding AStarPathFinding { get; private set; }
+	//public properties
+	public AStarPathfinding AStarPathFinding { get; private set; }
 
-    public void Initialize(NavMeshPathGraph navMeshGraph, AStarPathfinding pathfindingAlgorithm)
-    {
-        this.draw = false;
-        this.navMesh = navMeshGraph;
+	public void Initialize(NavMeshPathGraph navMeshGraph, AStarPathfinding pathfindingAlgorithm)
+	{
+		this.draw = false;
+		this.navMesh = navMeshGraph;
 
-        this.AStarPathFinding = pathfindingAlgorithm;
-        this.AStarPathFinding.NodesPerFrame = 200;
+		this.AStarPathFinding = pathfindingAlgorithm;
+		this.AStarPathFinding.NodesPerFrame = 200;
 
-        this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
-        this.smoothedPath = new GlobalPath();
-    }
+		this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
+		this.smoothedPath = new GlobalPath();
+	}
 
 	// Use this for initialization
 	void Awake ()
 	{
-        this.currentClickNumber = 1;
+		this.currentClickNumber = 1;
 
-        //comentar o metodo que nao queremos usar e descomentar o que queremos usar (organizado do pior ao melhor):
+		//comentar o metodo que nao queremos usar e descomentar o que queremos usar (organizado do pior ao melhor):
 
-        //AStar com Unordered List
-        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
-        //AStar com PriorityHeap
-        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
-        //NodeAStar
-        //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
-        //GoalBounding
-        this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
+		//AStar com Unordered List
+		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new SimpleUnorderedNodeList(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+		//AStar com PriorityHeap
+		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new AStarPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new NodePriorityHeap(), new HashtableSet(), new EuclidianDistanceHeuristic()));
+		//NodeAStar
+		//this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
+		//GoalBounding
+		this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
 
-    }
+	}
 
-    // Update is called once per frame
-    void Update () 
-    {
+	// Update is called once per frame
+	void Update () 
+	{
 		Vector3 position;
 
 		if (Input.GetMouseButtonDown(0)) 
@@ -80,190 +80,186 @@ public class PathfindingManager : MonoBehaviour {
 			//if there is a valid position
 			if(this.MouseClickPosition(out position))
 			{
-                //if this is the first click we're setting the start point
-                if (this.currentClickNumber == 1)
-                {
-                    //show the start sphere, hide the end one
-                    //this is just a small adjustment to better see the debug sphere
-                    this.startDebugSphere.transform.position = position + Vector3.up;
-                    this.startDebugSphere.SetActive(true);
-                    this.endDebugSphere.SetActive(false);
-                    this.currentClickNumber = 2;
-                    this.startPosition = position;
-                    this.currentSolution = null;
-                    this.draw = false;
-                }
-                else
-                {
-                    //we're setting the end point
-                    //this is just a small adjustment to better see the debug sphere
-                    this.endDebugSphere.transform.position = position + Vector3.up;
-                    this.endDebugSphere.SetActive(true);
-                    this.currentClickNumber = 1;
-                    this.endPosition = position;
-                    this.draw = true;
-                    //initialize the search algorithm
-                    this.AStarPathFinding.InitializePathfindingSearch(this.startPosition, this.endPosition);
-                }
+				//if this is the first click we're setting the start point
+				if (this.currentClickNumber == 1)
+				{
+					//show the start sphere, hide the end one
+					//this is just a small adjustment to better see the debug sphere
+					this.startDebugSphere.transform.position = position + Vector3.up;
+					this.startDebugSphere.SetActive(true);
+					this.endDebugSphere.SetActive(false);
+					this.currentClickNumber = 2;
+					this.startPosition = position;
+					this.currentSolution = null;
+					this.draw = false;
+				}
+				else
+				{
+					//we're setting the end point
+					//this is just a small adjustment to better see the debug sphere
+					this.endDebugSphere.transform.position = position + Vector3.up;
+					this.endDebugSphere.SetActive(true);
+					this.currentClickNumber = 1;
+					this.endPosition = position;
+					this.draw = true;
+					//initialize the search algorithm
+					this.AStarPathFinding.InitializePathfindingSearch(this.startPosition, this.endPosition);
+				}
 			}
 		}
-        else if(Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            this.InitializePathFinding(this.p5.transform.localPosition, this.p6.transform.localPosition);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            this.InitializePathFinding(this.p1.transform.localPosition, this.p2.transform.localPosition);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            this.InitializePathFinding(this.p2.transform.localPosition, this.p4.transform.localPosition);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            this.InitializePathFinding(this.p2.transform.localPosition, this.p5.transform.localPosition);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            this.InitializePathFinding(this.p1.transform.localPosition, this.p3.transform.localPosition);
-        }
+		else if(Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			this.InitializePathFinding(this.p5.transform.localPosition, this.p6.transform.localPosition);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			this.InitializePathFinding(this.p1.transform.localPosition, this.p2.transform.localPosition);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			this.InitializePathFinding(this.p2.transform.localPosition, this.p4.transform.localPosition);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			this.InitializePathFinding(this.p2.transform.localPosition, this.p5.transform.localPosition);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha5))
+		{
+			this.InitializePathFinding(this.p1.transform.localPosition, this.p3.transform.localPosition);
+		}
 
-        //call the pathfinding method if the user specified a new goal
-        if (this.AStarPathFinding.InProgress)
-	    {
-	        this.finished = this.AStarPathFinding.Search(out this.currentSolution);
-	    }
+		//call the pathfinding method if the user specified a new goal
+		if (this.AStarPathFinding.InProgress)
+		{
+			this.finished = this.AStarPathFinding.Search(out this.currentSolution);
+		}
 
-        if (finished)
-        {
-            //TODO: Call Path-smooting
-        }
-
-
-    }
-
-    public void SmoothPath() {
-        int i = 0;
-        var positions = currentSolution.PathPositions;
-        smoothedPath.PathPositions.Add(positions[0]);
-
-        while (i < positions.Count) {
-            int j = i + 1;
-
-            while (j < positions.Count) {
-                if (j+1 < positions.Count) {
-                    var pos_start = positions[i];
-                    var pos_next = positions[j + 1];
-
-                    /*RaycastHit hit = new RaycastHit();
-                    Ray rayVector = new Ray(pos_start, pos_next);
-                    var collision = Obstacle.Raycast(rayVector, out hit, this.MaxLookAhead);*/
-                    var collision = true;
-
-                    if (collision) {
-                        smoothedPath.PathPositions.Add(positions[j]);
-                        i = j;
-                        break;
-                    }
-                    else
-                        j++;
-                }
-                else {
-                    smoothedPath.PathPositions.Add(positions[j]);
-                    i = j;
-                    break;
-                }
-            }
-        }
-
-        /*while (i < nodes.len)
-	        j = i+1
-
-	        while (j < nodes.len)
-
-		        if (j+1 < nodes.len)
-			        pos_start = nodes[i].position
-			        pos_aux = nodes[j+1].position
-			        ray = ray(pos_start, pos_aux)
-
-			        if (ray.hit)
-				        smooth.add(nodes[j])
-				        i = j
-				        break
-			        else
-				        j++
-		        else
-			        smooth.add(nodes[j])
-			        i = j
-			        break
-        */
-    }
+		if (finished)
+		{
+			//TODO: Call Path-smooting
+		}
 
 
-    public void OnGUI()
-    {
-        if (this.currentSolution != null)
-        {
-            var time = this.AStarPathFinding.TotalProcessingTime*1000;
-            float timePerNode;
-            if (this.AStarPathFinding.TotalExploredNodes > 0)
-            {
-                timePerNode = time/this.AStarPathFinding.TotalExploredNodes;
-            }
-            else
-            {
-                timePerNode = 0;
-            }
-            var text = "Nodes Visited: " + this.AStarPathFinding.TotalExploredNodes
-                       + "\nMaximum Open Size: " + this.AStarPathFinding.MaxOpenNodes
-                       + "\nProcessing time (ms): " + time.ToString("F")
-                       + "\nTime per Node (ms):" + timePerNode.ToString("F4");
+	}
 
-            GUI.contentColor = Color.black;
-            GUI.Label(new Rect(10,10,300,200),text);
-        }
-    }
+	public void SmoothPath() {
+		int i = 0;
+		var positions = currentSolution.PathPositions;
+		smoothedPath.PathPositions.Add(positions[0]);
 
-    public void OnDrawGizmos()
-    {
-        if (this.draw)
-        {
-            //draw the current Solution Path if any (for debug purposes)
-            if (this.currentSolution != null)
-            {
-                var previousPosition = this.startPosition;
-                foreach (var pathPosition in this.currentSolution.PathPositions)
-                {
-                    Debug.DrawLine(previousPosition, pathPosition, Color.red);
-                    previousPosition = pathPosition;
-                }
-            }
+		while (i < positions.Count) {
+			int j = i + 1;
 
-            //draw the nodes in Open and Closed Sets
-            if (this.AStarPathFinding != null)
-            {
-                Gizmos.color = Color.cyan;
+			while (j < positions.Count) {
+				if (j + 1 < positions.Count) {
+					var pos_start = positions[i];
+					var pos_next = positions[j + 1];
+					var direction = pos_next - pos_start;
+					float maxLookAhead = (pos_start - pos_next).magnitude;
 
-                if (this.AStarPathFinding.Open != null)
-                {
-                    foreach (var nodeRecord in this.AStarPathFinding.Open.All())
-                    {
-                        Gizmos.DrawSphere(nodeRecord.node.LocalPosition, 1.0f);
-                    }
-                }
+					Ray rayVector = new Ray(pos_start, pos_next);
+					RaycastHit hit;
+					if (Physics.Raycast(pos_start, direction, out hit)) {
+						if (hit.distance < maxLookAhead) {
+							smoothedPath.PathPositions.Add(positions[j]);
+							i = j;
+							break;
+						} else {
+							j++;
+						}
+					} else {
+						j++;
+					}
+				}
+			}
+		}
+		/*while (i < nodes.len)
+			j = i+1
 
-                Gizmos.color = Color.blue;
+			while (j < nodes.len)
 
-                if (this.AStarPathFinding.Closed != null)
-                {
-                    foreach (var nodeRecord in this.AStarPathFinding.Closed.All())
-                    {
-                        Gizmos.DrawSphere(nodeRecord.node.LocalPosition, 1.0f);
-                    }
-                }
-            }
-        }
-    }
+				if (j+1 < nodes.len)
+					pos_start = nodes[i].position
+					pos_aux = nodes[j+1].position
+					ray = ray(pos_start, pos_aux)
+
+					if (ray.hit)
+						smooth.add(nodes[j])
+						i = j
+						break
+					else
+						j++
+				else
+					smooth.add(nodes[j])
+					i = j
+					break
+		*/
+	}
+
+	public void OnGUI()
+	{
+		if (this.currentSolution != null)
+		{
+			var time = this.AStarPathFinding.TotalProcessingTime*1000;
+			float timePerNode;
+			if (this.AStarPathFinding.TotalExploredNodes > 0)
+			{
+				timePerNode = time/this.AStarPathFinding.TotalExploredNodes;
+			}
+			else
+			{
+				timePerNode = 0;
+			}
+			var text = "Nodes Visited: " + this.AStarPathFinding.TotalExploredNodes
+					   + "\nMaximum Open Size: " + this.AStarPathFinding.MaxOpenNodes
+					   + "\nProcessing time (ms): " + time.ToString("F")
+					   + "\nTime per Node (ms):" + timePerNode.ToString("F4");
+
+			GUI.contentColor = Color.black;
+			GUI.Label(new Rect(10,10,300,200),text);
+		}
+	}
+
+	public void OnDrawGizmos()
+	{
+		if (this.draw)
+		{
+			//draw the current Solution Path if any (for debug purposes)
+			if (this.currentSolution != null)
+			{
+				var previousPosition = this.startPosition;
+				foreach (var pathPosition in this.currentSolution.PathPositions)
+				{
+					Debug.DrawLine(previousPosition, pathPosition, Color.red);
+					previousPosition = pathPosition;
+				}
+			}
+
+			//draw the nodes in Open and Closed Sets
+			if (this.AStarPathFinding != null)
+			{
+				Gizmos.color = Color.cyan;
+
+				if (this.AStarPathFinding.Open != null)
+				{
+					foreach (var nodeRecord in this.AStarPathFinding.Open.All())
+					{
+						Gizmos.DrawSphere(nodeRecord.node.LocalPosition, 1.0f);
+					}
+				}
+
+				Gizmos.color = Color.blue;
+
+				if (this.AStarPathFinding.Closed != null)
+				{
+					foreach (var nodeRecord in this.AStarPathFinding.Closed.All())
+					{
+						Gizmos.DrawSphere(nodeRecord.node.LocalPosition, 1.0f);
+					}
+				}
+			}
+		}
+	}
 
 	private bool MouseClickPosition(out Vector3 position)
 	{
@@ -283,22 +279,22 @@ public class PathfindingManager : MonoBehaviour {
 		return false;
 	}
 
-    private void InitializePathFinding(Vector3 p1, Vector3 p2)
-    {
-       
-        //show the start sphere, hide the end one
-        //this is just a small adjustment to better see the debug sphere
-        this.startDebugSphere.transform.position = p1 + Vector3.up;
-        this.startDebugSphere.SetActive(true);
-        this.endDebugSphere.transform.position = p2 + Vector3.up;
-        this.endDebugSphere.SetActive(true);
-        this.currentClickNumber = 1;
-        this.startPosition = p1;
-        this.endPosition = p2;
+	private void InitializePathFinding(Vector3 p1, Vector3 p2)
+	{
+	   
+		//show the start sphere, hide the end one
+		//this is just a small adjustment to better see the debug sphere
+		this.startDebugSphere.transform.position = p1 + Vector3.up;
+		this.startDebugSphere.SetActive(true);
+		this.endDebugSphere.transform.position = p2 + Vector3.up;
+		this.endDebugSphere.SetActive(true);
+		this.currentClickNumber = 1;
+		this.startPosition = p1;
+		this.endPosition = p2;
 
-        this.currentSolution = null;
-        this.draw = true;
+		this.currentSolution = null;
+		this.draw = true;
 
-        this.AStarPathFinding.InitializePathfindingSearch(this.startPosition, this.endPosition);
-    }
+		this.AStarPathFinding.InitializePathfindingSearch(this.startPosition, this.endPosition);
+	}
 }
