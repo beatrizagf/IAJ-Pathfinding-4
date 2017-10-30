@@ -9,13 +9,13 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
 {
     public class GoalBoundingPathfinding : NodeArrayAStarPathFinding
     {
-        public GoalBoundingTable GoalBoundingTable { get; protected set;}
+        public GoalBoundingTable goalBoundingTable { get; protected set;}
         public int DiscardedEdges { get; protected set; }
 		public int TotalEdges { get; protected set; }
 
         public GoalBoundingPathfinding(NavMeshPathGraph graph, IHeuristic heuristic, GoalBoundingTable goalBoundsTable) : base(graph, heuristic)
         {
-            this.GoalBoundingTable = goalBoundsTable;
+            this.goalBoundingTable = goalBoundsTable;
         }
 
         public override void InitializePathfindingSearch(Vector3 startPosition, Vector3 goalPosition)
@@ -66,10 +66,19 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
             var startNode = childNodeRecord.node.NodeIndex;
 
             //entrada da tabela dos rectangulos
-            var bbox = GoalBoundingTable.table[color].connectionBounds[startNode];
+            //var bbox = this.goalBoundingTable.table[color].connectionBounds[startNode];
+            bool inBounds;
+
+            if (this.goalBoundingTable.table[startNode] != null) {
+                var bbox = this.goalBoundingTable.table[startNode].connectionBounds[color];
+                inBounds = bbox.PositionInsideBounds(childNodeRecord.node.Position);
+            }
+            else {
+                inBounds = true;
+            }
 
 
-            if (childNodeRecord.status == NodeStatus.Unvisited && bbox.PositionInsideBounds(childNodeRecord.node.Position))
+            if (childNodeRecord.status == NodeStatus.Unvisited && inBounds)
             {
                 childNodeRecord.fValue = f;
                 childNodeRecord.gValue = g;

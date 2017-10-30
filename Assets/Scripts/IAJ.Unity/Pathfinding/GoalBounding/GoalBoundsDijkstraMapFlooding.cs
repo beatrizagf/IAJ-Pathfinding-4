@@ -63,7 +63,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
                 NodeRecord bestNode = this.Open.GetBestAndRemove();
 
                 //aumentar o rectangulo
-                nodeGoalBounds.connectionBounds[bestNode.StartNodeOutConnectionIndex].UpdateBounds(bestNode.node.Position); //isto e a cor do rectangulo. falta updateBounds
+                nodeGoalBounds.connectionBounds[bestNode.StartNodeOutConnectionIndex].UpdateBounds(bestNode.node.Position); //isto e a cor do rectangulo
 
                 this.Closed.AddToClosed(bestNode);
 
@@ -94,7 +94,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
                 childNodeRecord.gValue = g;
                 childNodeRecord.parent = parent;
                 NodeRecordArray.AddToOpen(childNodeRecord);
-                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;   //das cor
+                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;   //dar cor
 
 
             }
@@ -104,7 +104,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.GoalBounding
                 childNodeRecord.gValue = g;
                 childNodeRecord.parent = parent;
                 NodeRecordArray.Replace(childNodeRecord, childNodeRecord);
-                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;    //trocas cor
+                childNodeRecord.StartNodeOutConnectionIndex = connectionIndex;    //trocar cor
 
 
             }

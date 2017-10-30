@@ -48,7 +48,11 @@ public class PathfindingManager : MonoBehaviour {
         this.AStarPathFinding = pathfindingAlgorithm;
         this.AStarPathFinding.NodesPerFrame = 200;
 
-        this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
+        /*foreach (NodeGoalBounds element in goalBoundsTable.table) {
+            var bound = element.connectionBounds;
+            print(bound.)
+        }*/
+
         this.smoothedPath = new GlobalPath();
     }
 
@@ -66,6 +70,7 @@ public class PathfindingManager : MonoBehaviour {
         //NodeAStar
         //this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new NodeArrayAStarPathFinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic()));
         //GoalBounding
+        this.goalBoundsTable = Resources.Load<GoalBoundingTable>("GoalBoundingTable");
         this.Initialize(NavigationManager.Instance.NavMeshGraphs[0], new GoalBoundingPathfinding(NavigationManager.Instance.NavMeshGraphs[0], new EuclidianDistanceHeuristic(), this.goalBoundsTable));
 
     }
@@ -136,10 +141,24 @@ public class PathfindingManager : MonoBehaviour {
 
         if (finished)
         {
-            //TODO: Call Path-smooting
+            //SmoothPath();
         }
 
 
+    }
+
+    public bool CheckCollision(Vector3 pos1, Vector3 pos2) {
+        RaycastHit hit = new RaycastHit();
+        Vector3 diff = pos2 - pos1;
+        Ray rayVector = new Ray(pos1, diff);
+
+        var collide = false;
+
+        //foreach (Wall )
+
+        //var collision = Obstacle.Raycast(rayVector, out hit, this.MaxLookAhead);
+
+        return true;
     }
 
     public void SmoothPath() {
